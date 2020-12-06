@@ -29,7 +29,7 @@ fn main() {
         .collect::<Vec<String>>();
 
     let mut ids = lines
-        .into_iter()
+        .iter()
         .map(|line| {
             let row: &str = &line[..8];
             let col: &str = &line[7..];
@@ -56,7 +56,7 @@ fn main() {
         .collect::<Vec<i32>>();
     ids.sort();
 
-    println!("Max id {}", ids.iter().last().unwrap());
+    println!("Max id {}", ids[ids.len() - 1]);
     // Find where the range and the id's stop matching and subtract one to get the value
     // (id is surrounded by -1 and +1 of itself)
     println!(

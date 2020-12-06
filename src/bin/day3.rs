@@ -1,5 +1,4 @@
 use std::process::exit;
-use std::time::Instant;
 use std::{env, fs};
 
 fn iterative_slope(right: usize, down: usize, hill: &Vec<String>) -> usize {
@@ -14,6 +13,7 @@ fn iterative_slope(right: usize, down: usize, hill: &Vec<String>) -> usize {
     count
 }
 
+#[allow(dead_code)]
 fn functional_version(step_w: usize, step_h: usize, hill: &Vec<String>) -> usize {
     hill.iter()
         .step_by(step_h)
@@ -34,29 +34,10 @@ fn main() {
     let contents = fs::read_to_string(filename).expect("Something went wrong reading file");
     let lines: Vec<String> = contents.split("\n").map(|s| s.to_string()).collect();
 
-    let now = Instant::now();
-    for j in 0..1000 {
-        let mut prod: usize = 1;
-        for i in (1..=7).step_by(2) {
-            prod *= functional_version(i, 1, &lines);
-        }
-        prod *= functional_version(1, 2, &lines);
+    let mut prod = 1;
+    for i in (1..=7).step_by(2) {
+        prod *= iterative_slope(i, 1, &lines);
     }
-    println!(
-        "Functional version {} ms",
-        now.elapsed().as_millis() as f32 / 1000 as f32
-    );
-
-    let now = Instant::now();
-    for j in 0..1000 {
-        let mut prod = 1;
-        for i in (1..=7).step_by(2) {
-            prod *= iterative_slope(i, 1, &lines);
-        }
-        prod *= iterative_slope(1, 2, &lines);
-    }
-    println!(
-        "Iterative version {} ms",
-        now.elapsed().as_millis() as f32 / 1000 as f32
-    );
+    prod *= iterative_slope(1, 2, &lines);
+    println!("You hit {} trees", prod);
 }
