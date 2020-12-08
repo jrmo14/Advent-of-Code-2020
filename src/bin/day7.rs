@@ -28,10 +28,20 @@ fn part1(bags: &mut HashMap<String, Vec<String>>) -> usize {
     container_count
 }
 
-fn part2(bag: &str, bags: &HashMap<String, Vec<(usize, String)>>) -> usize {
+fn part2(
+    bag: &str,
+    bags: &HashMap<String, Vec<(usize, String)>>,
+    ans: &mut HashMap<String, usize>,
+) -> usize {
     let mut count = 1;
     for child in &bags[bag] {
-        count += child.0 * part2(child.1.as_str(), bags);
+        if ans.contains_key(child.1.as_str()) {
+            count += child.0 * ans.get(child.1.as_str()).unwrap();
+        } else {
+            let tmp = part2(child.1.as_str(), bags, ans);
+            ans.insert(child.clone().1, tmp);
+            count += child.0 * tmp;
+        }
     }
     count
 }
@@ -91,5 +101,9 @@ fn main() {
     println!("Part 1: {}", part1(&mut reverse_container_order_bags));
 
     // This counts the shiny gold bag as well, so get rid of that
-    println!("Part 2: {}", part2("shinygold", &forward_order_bags) - 1)
+    let mut ans = HashMap::new();
+    println!(
+        "Part 2: {}",
+        part2("shinygold", &forward_order_bags, &mut ans) - 1
+    )
 }
