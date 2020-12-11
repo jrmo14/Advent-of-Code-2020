@@ -1,24 +1,25 @@
 use std::process::exit;
 use std::{env, fs};
 
+const DELTAS: &[(i32, i32); 8] = &[
+    (1, 1),
+    (1, 0),
+    (1, -1),
+    (0, 1),
+    (0, -1),
+    (-1, 1),
+    (-1, 0),
+    (-1, -1),
+];
+
 fn valid_coord(coord: (i32, i32), dim: (i32, i32)) -> bool {
     let in_range = |num: i32, upper: i32, lower: i32| -> bool { num >= lower && num < upper };
     in_range(coord.0, dim.0, 0) && in_range(coord.1, dim.1, 0)
 }
 
 fn count_surrounding_part1(seats: &Vec<Vec<char>>, row_idx: usize, col_idx: usize) -> i32 {
-    let deltas: &[(i32, i32); 8] = &[
-        (1, 1),
-        (1, 0),
-        (1, -1),
-        (0, 1),
-        (0, -1),
-        (-1, 1),
-        (-1, 0),
-        (-1, -1),
-    ];
     let mut count = 0;
-    for delta in deltas {
+    for delta in DELTAS {
         if valid_coord(
             (delta.0 + row_idx as i32, delta.1 + col_idx as i32),
             (seats.len() as i32, seats[0].len() as i32),
@@ -62,17 +63,8 @@ fn step_simulation_part1(seats: &Vec<Vec<char>>) -> Vec<Vec<char>> {
 
 fn count_surrounding_part2(seats: &Vec<Vec<char>>, row_idx: usize, col_idx: usize) -> i32 {
     let mut count = 0;
-    let deltas: &[(i32, i32); 8] = &[
-        (1, 1),
-        (1, 0),
-        (1, -1),
-        (0, 1),
-        (0, -1),
-        (-1, 1),
-        (-1, 0),
-        (-1, -1),
-    ];
-    for delta in deltas {
+
+    for delta in DELTAS {
         for step in 1..seats.len() {
             let new_coord = (
                 delta.0 * (step as i32) + row_idx as i32,
